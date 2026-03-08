@@ -1,20 +1,20 @@
 #!/bin/bash
-# falgen installer — installs via pipx, pip, or uvx
+# falgen installer/updater
 set -e
 
 echo "Installing falgen..."
 
 if command -v pipx &>/dev/null; then
-    pipx install falgen
+    pipx install falgen --force
     echo "Installed via pipx. Run: falgen"
 elif command -v uv &>/dev/null; then
-    uv tool install falgen
+    uv tool install falgen --force
     echo "Installed via uv. Run: falgen"
 elif command -v pip3 &>/dev/null; then
-    pip3 install --user falgen
+    pip3 install --user --upgrade falgen
     echo "Installed via pip3. Run: falgen"
 elif command -v pip &>/dev/null; then
-    pip install --user falgen
+    pip install --user --upgrade falgen
     echo "Installed via pip. Run: falgen"
 else
     echo "Error: Python pip not found. Install Python 3.11+ first."
