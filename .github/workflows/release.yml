@@ -1,0 +1,133 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-13
+            platform: darwin
+            arch: amd64
+          - os: macos-14
+            platform: darwin
+            arch: arm64
+          - os: ubuntu-latest
+            platform: linux
+            arch: amd64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -e . pyinstaller
+
+      - name: Build binary
+        run: pyinstaller falgen.spec --noconfirm
+
+      - name: Verify binary
+        run: ./dist/falgen --version
+
+      - name: Package
+        run: |
+          cd dist
+          tar -czf falgen_${{ matrix.platform }}_${{ matrix.arch }}.tar.gz falgen
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: falgen_${{ matrix.platform }}_${{ matrix.arch }}
+          path: dist/falgen_${{ matrix.platform }}_${{ matrix.arch }}.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Collect archives
+        run: |
+          mkdir -p release
+          find artifacts -name '*.tar.gz' -exec cp {} release/ \;
+          cd release && sha256sum *.tar.gz > checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Homebrew tap
+        if: "!contains(github.ref, '-')"
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+
+          DARWIN_AMD64_SHA=$(sha256sum release/falgen_darwin_amd64.tar.gz | cut -d' ' -f1)
+          DARWIN_ARM64_SHA=$(sha256sum release/falgen_darwin_arm64.tar.gz | cut -d' ' -f1)
+          LINUX_AMD64_SHA=$(sha256sum release/falgen_linux_amd64.tar.gz | cut -d' ' -f1)
+
+          FORMULA=$(cat <<RUBY
+          class Genmedia < Formula
+            desc "AI media generation from the terminal"
+            homepage "https://github.com/fal-ai/falgen"
+            version "${VERSION}"
+            license "MIT"
+
+            on_macos do
+              if Hardware::CPU.arm?
+                url "https://github.com/fal-ai/falgen/releases/download/${TAG}/falgen_darwin_arm64.tar.gz"
+                sha256 "${DARWIN_ARM64_SHA}"
+              else
+                url "https://github.com/fal-ai/falgen/releases/download/${TAG}/falgen_darwin_amd64.tar.gz"
+                sha256 "${DARWIN_AMD64_SHA}"
+              end
+            end
+
+            on_linux do
+              url "https://github.com/fal-ai/falgen/releases/download/${TAG}/falgen_linux_amd64.tar.gz"
+              sha256 "${LINUX_AMD64_SHA}"
+            end
+
+            def install
+              bin.install "falgen"
+            end
+
+            test do
+              assert_match version.to_s, shell_output("#{bin}/falgen --version")
+            end
+          end
+          RUBY
+          )
+
+          # Clone tap and update formula
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/fal-ai/homebrew-tap.git" tap
+          echo "$FORMULA" > tap/Formula/falgen.rb
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/falgen.rb
+          git commit -m "falgen ${VERSION}" || true
+          git push
