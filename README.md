@@ -26,13 +26,17 @@ Generate images, videos, audio, and more — just describe what you want. falgen
 ## Install
 
 ```bash
-# Homebrew
-brew install fal-ai/tap/falgen
+# Quick install (auto-detects pipx/uv/pip)
+curl -fsSL https://raw.githubusercontent.com/fal-ai/falgen/main/install.sh | bash
 
-# pip
+# pip / pipx
 pip install falgen
+pipx install falgen
 
-# npx (downloads a prebuilt binary)
+# uv
+uv tool install falgen
+
+# npx (no install needed)
 npx falgen
 ```
 
