@@ -54,11 +54,11 @@ Requires Python 3.11+.
 falgen
 
 # Option 2: environment variable
-export FAL_KEY="your-key-here"
+export FALGEN_KEY="your-key-here"
 falgen
 ```
 
-Get your API key at [fal.ai/dashboard/keys](https://fal.ai/dashboard/keys).
+Get your API key at [fal.ai/dashboard/keys](https://fal.ai/dashboard/keys). `FAL_KEY` is also supported. Use `/logout` to remove a saved key.
 
 ## Usage
 
@@ -139,6 +139,7 @@ Then just type what you want:
 | `/compact` | Toggle compact mode (hide tool calls) |
 | `/usage` | Usage and cost |
 | `/login` | Set API key |
+| `/logout` | Remove API key |
 | `/clear` | Clear conversation |
 
 **Keyboard:** `Shift+Enter` new line · `Esc` cancel generation · `Ctrl+L` clear · `Ctrl+V` paste image · `Ctrl+C` quit

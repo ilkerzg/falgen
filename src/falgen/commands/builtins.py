@@ -260,3 +260,19 @@ class LoginCommand(SlashCommand):
             "[dim]Then paste it here: /login YOUR_KEY[/dim]"
         ))
         container.scroll_end(animate=False)
+
+
+class LogoutCommand(SlashCommand):
+    name = "/logout"
+    description = "Remove API key"
+
+    def execute(self, app, arg: str) -> None:
+        from ..auth import delete_key
+
+        container = app.query_one("#messages")
+        if delete_key():
+            app.fal_key = ""
+            container.mount(Static("[dim]API key removed.[/dim]"))
+        else:
+            container.mount(Static("[dim]No saved API key found.[/dim]"))
+        container.scroll_end(animate=False)

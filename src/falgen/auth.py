@@ -37,26 +37,34 @@ def save_key(key: str) -> None:
     os.chmod(_CACHED_KEY_FILE, 0o600)
 
 
+def delete_key() -> bool:
+    """Delete cached API key. Returns True if a key was deleted."""
+    try:
+        os.unlink(_CACHED_KEY_FILE)
+        return True
+    except FileNotFoundError:
+        return False
+
+
 def get_auth_headers() -> dict[str, str]:
-    """Get auth headers. Checks FAL_KEY env var, then cached key."""
+    """Get auth headers. Checks FALGEN_KEY, FAL_KEY env vars, then cached key."""
     headers: dict[str, str] = {}
 
-    # 1. FAL_KEY env var
-    fal_key = os.environ.get("FAL_KEY", "").strip()
+    # 1. FALGEN_KEY env var (preferred)
+    fal_key = os.environ.get("FALGEN_KEY", "").strip()
+
+    # 2. FAL_KEY env var (fallback for compatibility)
+    if not fal_key:
+        fal_key = os.environ.get("FAL_KEY", "").strip()
+
     if fal_key:
-        if ":" in fal_key:
-            headers["Authorization"] = f"Key {fal_key}"
-        else:
-            headers["Authorization"] = f"Key {fal_key}"
+        headers["Authorization"] = f"Key {fal_key}"
         return headers
 
-    # 2. Cached key
+    # 3. Cached key
     cached = _read_cached_key()
     if cached:
-        if ":" in cached:
-            headers["Authorization"] = f"Key {cached}"
-        else:
-            headers["Authorization"] = f"Key {cached}"
+        headers["Authorization"] = f"Key {cached}"
         return headers
 
     return headers

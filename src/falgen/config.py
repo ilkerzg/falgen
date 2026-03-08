@@ -53,6 +53,7 @@ HELP_COMMANDS = [
     ("/default",   "set default models",   ""),
     ("/resume",    "resume session",       ""),
     ("/login",     "set API key",          ""),
+    ("/logout",    "remove API key",       ""),
     ("/clear",     "clear conversation",   "ctrl+l"),
 ]
 
