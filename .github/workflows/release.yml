@@ -9,7 +9,47 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  publish-pypi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build package
+        run: |
+          pip install build
+          python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Sync version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          cd npm
+          npm version "$TAG" --no-git-tag-version --allow-same-version
+
+      - name: Publish to npm
+        run: cd npm && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  build-binaries:
     strategy:
       matrix:
         include:
@@ -52,8 +92,8 @@ jobs:
           name: falgen_${{ matrix.platform }}_${{ matrix.arch }}
           path: dist/falgen_${{ matrix.platform }}_${{ matrix.arch }}.tar.gz
 
-  release:
-    needs: build
+  github-release:
+    needs: [build-binaries, publish-pypi, publish-npm]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -76,58 +116,3 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update Homebrew tap
-        if: "!contains(github.ref, '-')"
-        env:
-          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-        run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          VERSION="${TAG#v}"
-
-          DARWIN_AMD64_SHA=$(sha256sum release/falgen_darwin_amd64.tar.gz | cut -d' ' -f1)
-          DARWIN_ARM64_SHA=$(sha256sum release/falgen_darwin_arm64.tar.gz | cut -d' ' -f1)
-          LINUX_AMD64_SHA=$(sha256sum release/falgen_linux_amd64.tar.gz | cut -d' ' -f1)
-
-          FORMULA=$(cat <<RUBY
-          class Genmedia < Formula
-            desc "AI media generation from the terminal"
-            homepage "https://github.com/ilkerzg/falgen"
-            version "${VERSION}"
-            license "MIT"
-
-            on_macos do
-              if Hardware::CPU.arm?
-                url "https://github.com/ilkerzg/falgen/releases/download/${TAG}/falgen_darwin_arm64.tar.gz"
-                sha256 "${DARWIN_ARM64_SHA}"
-              else
-                url "https://github.com/ilkerzg/falgen/releases/download/${TAG}/falgen_darwin_amd64.tar.gz"
-                sha256 "${DARWIN_AMD64_SHA}"
-              end
-            end
-
-            on_linux do
-              url "https://github.com/ilkerzg/falgen/releases/download/${TAG}/falgen_linux_amd64.tar.gz"
-              sha256 "${LINUX_AMD64_SHA}"
-            end
-
-            def install
-              bin.install "falgen"
-            end
-
-            test do
-              assert_match version.to_s, shell_output("#{bin}/falgen --version")
-            end
-          end
-          RUBY
-          )
-
-          # Clone tap and update formula
-          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/fal-ai/homebrew-tap.git" tap
-          echo "$FORMULA" > tap/Formula/falgen.rb
-          cd tap
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/falgen.rb
-          git commit -m "falgen ${VERSION}" || true
-          git push
