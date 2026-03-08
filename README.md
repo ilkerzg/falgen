@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/status-beta-orange" alt="beta" />
   <a href="https://fal.ai"><img src="https://img.shields.io/badge/powered%20by-fal.ai-blue" alt="powered by fal.ai" /></a>
   <a href="https://artificialanalysis.ai"><img src="https://img.shields.io/badge/rankings-Artificial%20Analysis-purple" alt="Artificial Analysis" /></a>
-  <img src="https://img.shields.io/github/license/fal-ai/falgen" alt="license" />
+  <img src="https://img.shields.io/github/license/ilkerzg/falgen" alt="license" />
 </p>
 
 <p align="center">
@@ -21,21 +21,21 @@
 
 ---
 
-Generate images, videos, audio, and more — just describe what you want. falgen picks the best model using [Artificial Analysis](https://artificialanalysis.ai) quality rankings, handles the queue, and renders results inline in your terminal.
+Generate images, videos, audio, and more - just describe what you want. falgen picks the best model using [Artificial Analysis](https://artificialanalysis.ai) quality rankings, handles the queue, and renders results inline in your terminal.
 
 ## Install
 
-**Recommended** — install as an isolated tool (won't pollute your Python environment):
+**Recommended** - install as an isolated tool (won't pollute your Python environment):
 
 ```bash
 pipx install falgen     # via pipx
 uv tool install falgen  # via uv
 ```
 
-**Quick install** — auto-detects the best method:
+**Quick install** - auto-detects the best method:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/fal-ai/falgen/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ilkerzg/falgen/main/install.sh | bash
 ```
 
 **Other options:**
@@ -79,7 +79,7 @@ Then just type what you want:
 
 ## Features
 
-**Smart model selection** — Ranks models by quality using [Artificial Analysis](https://artificialanalysis.ai) arena ELO ratings. Supports style-specific rankings (portraits, anime, photorealistic, etc.) so you always get the best model for your task.
+**Smart model selection** - Ranks models by quality using [Artificial Analysis](https://artificialanalysis.ai) arena ELO ratings. Supports style-specific rankings (portraits, anime, photorealistic, etc.) so you always get the best model for your task.
 
 <p align="center">
   <img src="https://v3b.fal.media/files/b/0a9166b9/asZora6lqpsXpGUr_nmDv_image.png" width="720" />
@@ -87,7 +87,7 @@ Then just type what you want:
   <em>The agent asks which model to use, ranked by Artificial Analysis ELO ratings, and proceeds based on your choice.</em>
 </p>
 
-**AI tools** — The LLM agent has access to:
+**AI tools** - The LLM agent has access to:
 
 | Tool | Description |
 |------|-------------|
@@ -102,7 +102,7 @@ Then just type what you want:
 <p align="center">
   <img src="https://v3b.fal.media/files/b/0a9166a4/BX6kG6seiaKGaMdgL_bFb_image.png" width="720" />
   <br />
-  <em>Tool calls in action — the agent searches models, checks schemas, and submits a generation job with a live loading skeleton.</em>
+  <em>Tool calls in action - the agent searches models, checks schemas, and submits a generation job with a live loading skeleton.</em>
 </p>
 
 <p align="center">
@@ -111,7 +111,7 @@ Then just type what you want:
   <em>Generated image rendered inline via <a href="https://hpjansson.org/chafa/">chafa</a>. Click to open in your system viewer.</em>
 </p>
 
-**Terminal UI** — Built with [Textual](https://textual.textualize.io/). Inline media preview via [chafa](https://hpjansson.org/chafa/). Five themes: Tokyo Night, Catppuccin, Nord, Gruvbox, Everforest.
+**Terminal UI** - Built with [Textual](https://textual.textualize.io/). Inline media preview via [chafa](https://hpjansson.org/chafa/). Five themes: Tokyo Night, Catppuccin, Nord, Gruvbox, Everforest.
 
 <p align="center">
   <img src="https://v3b.fal.media/files/b/0a9166b2/M7ZWfSjopBB0E-PXgezZV_image.png" width="720" />
@@ -119,11 +119,11 @@ Then just type what you want:
   <em>Slash commands with autocomplete for quick access to all features.</em>
 </p>
 
-**Input** — Multi-line input (Shift+Enter), image paste from clipboard (Ctrl+V), local file path detection and upload, fuzzy-filtered choice menus.
+**Input** - Multi-line input (Shift+Enter), image paste from clipboard (Ctrl+V), local file path detection and upload, fuzzy-filtered choice menus.
 
-**Session management** — SQLite persistence, resume previous sessions (`/resume`), media URLs tracked per session.
+**Session management** - SQLite persistence, resume previous sessions (`/resume`), media URLs tracked per session.
 
-**Context management** — Automatic conversation summarization when approaching context limits.
+**Context management** - Automatic conversation summarization when approaching context limits.
 
 ## Commands
 
@@ -145,9 +145,9 @@ Then just type what you want:
 
 ## Preview Dependencies
 
-- [chafa](https://hpjansson.org/chafa/) — inline image/video/audio previews
-- [ffmpeg](https://ffmpeg.org/) — video thumbnails and audio waveforms
-- Optional: [pngpaste](https://github.com/jcsalterego/pngpaste) — clipboard image paste on macOS
+- [chafa](https://hpjansson.org/chafa/) - inline image/video/audio previews
+- [ffmpeg](https://ffmpeg.org/) - video thumbnails and audio waveforms
+- Optional: [pngpaste](https://github.com/jcsalterego/pngpaste) - clipboard image paste on macOS
 
 The app runs without these, but previews will be unavailable.
 
@@ -156,7 +156,7 @@ The app runs without these, but previews will be unavailable.
 Open source side project. Contributions, issues, and ideas are welcome.
 
 ```bash
-git clone https://github.com/fal-ai/falgen
+git clone https://github.com/ilkerzg/falgen
 cd falgen
 pip install -e .
 falgen
@@ -164,7 +164,7 @@ falgen
 
 ## Acknowledgements
 
-Model quality rankings powered by [Artificial Analysis](https://artificialanalysis.ai) — independent benchmarks through crowd-sourced blind comparisons.
+Model quality rankings powered by [Artificial Analysis](https://artificialanalysis.ai) - independent benchmarks through crowd-sourced blind comparisons.
 
 ## License
 

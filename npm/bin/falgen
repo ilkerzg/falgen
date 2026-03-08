@@ -7,7 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const https = require("https");
 const os = require("os");
-const REPO = "fal-ai/falgen";
+const REPO = "ilkerzg/falgen";
 const BIN_NAME = "falgen";
 
 function getPlatform() {
