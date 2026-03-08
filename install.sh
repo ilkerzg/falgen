@@ -5,10 +5,15 @@ set -e
 echo "Installing falgen..."
 
 if command -v pipx &>/dev/null; then
-    pipx install falgen --force
-    echo "Installed via pipx. Run: falgen"
+    if pipx list 2>/dev/null | grep -q falgen; then
+        pipx upgrade falgen
+        echo "Updated via pipx. Run: falgen"
+    else
+        pipx install falgen
+        echo "Installed via pipx. Run: falgen"
+    fi
 elif command -v uv &>/dev/null; then
-    uv tool install falgen --force
+    uv tool install falgen --upgrade
     echo "Installed via uv. Run: falgen"
 elif command -v pip3 &>/dev/null; then
     pip3 install --user --upgrade falgen
