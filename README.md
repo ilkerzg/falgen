@@ -70,6 +70,12 @@ Then just type what you want:
 
 **Smart model selection** — Ranks models by quality using [Artificial Analysis](https://artificialanalysis.ai) arena ELO ratings. Supports style-specific rankings (portraits, anime, photorealistic, etc.) so you always get the best model for your task.
 
+<p align="center">
+  <img src="https://v3b.fal.media/files/b/0a9166b9/asZora6lqpsXpGUr_nmDv_image.png" width="720" />
+  <br />
+  <em>The agent asks which model to use, ranked by Artificial Analysis ELO ratings, and proceeds based on your choice.</em>
+</p>
+
 **AI tools** — The LLM agent has access to:
 
 | Tool | Description |
@@ -82,7 +88,25 @@ Then just type what you want:
 | `get_skill` | Domain knowledge (cinematography, prompting, etc.) |
 | `get_pricing` | Cost per image/minute/character |
 
+<p align="center">
+  <img src="https://v3b.fal.media/files/b/0a9166a4/BX6kG6seiaKGaMdgL_bFb_image.png" width="720" />
+  <br />
+  <em>Tool calls in action — the agent searches models, checks schemas, and submits a generation job with a live loading skeleton.</em>
+</p>
+
+<p align="center">
+  <img src="https://v3b.fal.media/files/b/0a9166a8/XtffpVMkVdgRhu-j9lUeH_image.png" width="720" />
+  <br />
+  <em>Generated image rendered inline via <a href="https://hpjansson.org/chafa/">chafa</a>. Click to open in your system viewer.</em>
+</p>
+
 **Terminal UI** — Built with [Textual](https://textual.textualize.io/). Inline media preview via [chafa](https://hpjansson.org/chafa/). Five themes: Tokyo Night, Catppuccin, Nord, Gruvbox, Everforest.
+
+<p align="center">
+  <img src="https://v3b.fal.media/files/b/0a9166b2/M7ZWfSjopBB0E-PXgezZV_image.png" width="720" />
+  <br />
+  <em>Slash commands with autocomplete for quick access to all features.</em>
+</p>
 
 **Input** — Multi-line input (Shift+Enter), image paste from clipboard (Ctrl+V), local file path detection and upload, fuzzy-filtered choice menus.
 
