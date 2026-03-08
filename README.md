@@ -25,20 +25,27 @@ Generate images, videos, audio, and more — just describe what you want. falgen
 
 ## Install
 
+**Recommended** — install as an isolated tool (won't pollute your Python environment):
+
 ```bash
-# Quick install (auto-detects pipx/uv/pip)
-curl -fsSL https://raw.githubusercontent.com/fal-ai/falgen/main/install.sh | bash
-
-# pip / pipx
-pip install falgen
-pipx install falgen
-
-# uv
-uv tool install falgen
-
-# npx (no install needed)
-npx falgen
+pipx install falgen     # via pipx
+uv tool install falgen  # via uv
 ```
+
+**Quick install** — auto-detects the best method:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fal-ai/falgen/main/install.sh | bash
+```
+
+**Other options:**
+
+```bash
+pip install falgen   # standard pip
+npx falgen           # run without installing (via npm)
+```
+
+Requires Python 3.11+.
 
 ## Auth
 
