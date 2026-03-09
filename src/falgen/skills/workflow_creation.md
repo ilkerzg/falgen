@@ -186,6 +186,81 @@ Combine separately generated visual, audio, and text tracks.
 - Subtitle timing: match to scene duration (e.g., 5s per scene → subtitle at 0-5s)
 - Disable audio generation on video model when using external TTS
 
+### Pattern 8: Multi-Expert Agent Panel
+Chain specialized LLM "experts" that each contribute a different dimension, then synthesize.
+
+```
+[Vision LLM: Analyze Input]
+       ↓
+[Expert A: Strategy] ──┐
+[Expert B: Visual]  ───┤── parallel
+[Expert C: Motion]  ───┘
+       ↓
+[Merge All Expert Outputs]
+       ↓
+[Master Synthesizer LLM → final prompts]
+       ↓
+[N × Generation]
+```
+
+**When to use:** Brand campaigns, complex creative briefs, multi-format output (story + square + landscape + video).
+**Key rules:**
+- Each expert has a narrow, well-defined role (strategist, art director, motion director)
+- Expert outputs are structured JSON for composability
+- A final "master" LLM synthesizes all expert inputs into generation-ready prompts
+- Enforce diversity: master must avoid reusing angles, backgrounds, or lighting across outputs
+
+### Pattern 9: Shotgun Variation (Brute-Force Diversity)
+Run the same prompt through many parallel instances, relying on sampling randomness for diversity.
+
+```
+[Single LLM Prompt] → [Instance-1] [Instance-2] ... [Instance-N]  ← all parallel, same prompt
+                            ↓           ↓               ↓
+                      [Image-1]   [Image-2]   ...  [Image-N]
+```
+
+**When to use:** Style exploration, generating many variants for user selection, A/B testing.
+**Key rules:**
+- All LLM nodes share the IDENTICAL prompt
+- Diversity comes from LLM sampling randomness (temperature 0.6-0.9)
+- Generate many (15-50), let user pick the best
+- Works best with style transfer / image editing where a reference image constrains the output
+
+### Pattern 10: Systematic Variation Matrix
+Each node varies exactly ONE controlled axis while keeping everything else constant.
+
+```
+[Base Prompt + Variation 1: angle=front, lighting=studio]     → [Image-1]
+[Base Prompt + Variation 2: angle=3/4, lighting=golden-hour]  → [Image-2]
+[Base Prompt + Variation 3: angle=close-up, lighting=blue]    → [Image-3]
+...
+```
+
+**When to use:** Product photography, character turntables, comprehensive style sheets.
+**Key rules:**
+- Define a variation matrix: angle × lighting × material × mood
+- Each node gets a unique combination from the matrix
+- Temperature scales with creativity needs: standard shots 0.6, artistic 0.9
+- Share a common base prompt, only the variation section changes
+
+### Pattern 11: Zero-Shot Multi-Image Reasoning
+Use a vision LLM to analyze multiple input images, assign roles, and generate structured instructions.
+
+```
+[Multiple Input Images] → [Vision LLM with reasoning]
+                                    ↓
+                          [Structured JSON: role assignments + instructions]
+                                    ↓
+                          [Image Edit with all inputs + instructions]
+```
+
+**When to use:** Identity swap, style transfer from reference, multi-image composition.
+**Key rules:**
+- Use the most capable vision model with reasoning enabled
+- LLM must analyze ALL images and determine which serves what role
+- Output structured JSON with explicit preservation rules and negative constraints
+- Priority hierarchy: what to keep > what to change
+
 ---
 
 ## Creative Techniques
@@ -332,6 +407,36 @@ Steps:
 3. Per scene: merge audio + video
 4. Merge all scenes
 Optional: + subtitle overlay
+```
+
+### Recipe: Brand Campaign (Multi-Expert)
+```
+Input: brand image + brief text
+Steps:
+1. Vision LLM → brand identity analysis
+2. 3 parallel experts: strategist, art director, motion director
+3. Master synthesizer → 6 image prompts + 2 video prompts
+4. 6 × Image Gen (parallel, mixed aspect ratios)
+5. 2 × I2V from generated keyframe images
+Output: 6 images + 2 videos across story/square/landscape formats
+```
+
+### Recipe: Style Exploration (Shotgun)
+```
+Input: reference image + target style description
+Steps:
+1. N × LLM (same prompt, parallel) → N diverse prompt variations
+2. N × Image Edit (reference + each prompt, parallel)
+Output: N style variants for user to browse/select
+```
+
+### Recipe: Identity-Preserving Edit
+```
+Input: multiple images (scene + identity references)
+Steps:
+1. Vision LLM (reasoning) → analyze images, assign roles, write JSON instructions
+2. Image Edit with all images + JSON instructions
+Output: edited image with preserved identity in target scene
 ```
 
 ---
