@@ -243,21 +243,31 @@ class LoginCommand(SlashCommand):
         container = app.query_one("#messages")
 
         if arg:
-            # Direct key input
-            from ..auth import save_key
-            save_key(arg)
-            # Re-read to update provider
-            from ..auth import get_auth_headers
+            from ..auth import save_key, get_auth_headers
+            key = arg.strip()
+            save_key(key)
             headers = get_auth_headers()
             app.fal_key = headers.get("Authorization", "")
-            container.mount(Static("[dim]API key saved.[/dim]"))
+            app._needs_onboarding = False
+
+            # Mask key for display
+            masked = key[:4] + "..." + key[-4:] if len(key) > 10 else "****"
+            container.mount(Static(f"[bold green]API key saved[/bold green] [dim]({masked})[/dim]"))
             container.scroll_end(animate=False)
+
+            # Update input placeholder if it was in onboarding mode
+            try:
+                from ..config import INPUT_PLACEHOLDER
+                input_widget = app.query_one("#chat-input")
+                input_widget.placeholder = INPUT_PLACEHOLDER
+            except Exception:
+                pass
             return
 
-        # Prompt via choice menu
+        # No key provided - show instructions
         container.mount(Static(
-            "[dim]Get your API key from[/dim] [bold]https://fal.ai/dashboard/keys[/bold]\n"
-            "[dim]Then paste it here: /login YOUR_KEY[/dim]"
+            "[bold]Get your API key from[/bold] [underline]https://fal.ai/dashboard/keys[/underline]\n\n"
+            "[dim]Then run:[/dim] [bold]/login YOUR_KEY[/bold]"
         ))
         container.scroll_end(animate=False)
 

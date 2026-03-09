@@ -500,19 +500,9 @@ class FalChatApp(App):
 
         # First-run onboarding: treat input as API key
         if self._needs_onboarding and user_text and not user_text.startswith("/"):
-            from .auth import save_key, get_auth_headers
-            save_key(user_text)
-            headers = get_auth_headers()
-            self.fal_key = headers.get("Authorization", "")
+            # Treat as API key - use /login command to handle it
+            self._handle_slash(f"/login {user_text}")
             input_widget.clear()
-            container = self.query_one("#messages")
-            if self.fal_key:
-                self._needs_onboarding = False
-                input_widget.placeholder = INPUT_PLACEHOLDER
-                container.mount(Static("[bold green]API key saved! You're ready to generate.[/bold green]"))
-            else:
-                container.mount(Static("[bold red]Invalid key. Please try again.[/bold red]"))
-            container.scroll_end(animate=False)
             return
 
         # Handle pasted image: upload to fal CDN and inject URL into message
