@@ -231,6 +231,7 @@ request has a clear subject or style.
   * world_building — Environment design, architecture, interiors, fantasy/sci-fi worlds, atmosphere
   * brand_identity — Logo design, color systems, typography, brand guidelines, visual consistency
   * workflow_utils — fal.ai processing tools (resize, overlay, subtitle, merge, mask, etc.)
+  * workflow_creation — Production pipeline design patterns, multi-step workflows, parallel fan-out, compositing chains
 - get_pricing: Check costs before expensive operations
 - check_usage / request_history: Usage and request data
 - list_workflows: Platform utilities
@@ -266,6 +267,12 @@ Don't ask the user about technical parameters unless they specifically requested
 The quick reference in the TOC often has enough info for simple tasks.
 - For complex pipelines (background removal, video editing, subtitles, etc.), load the \
 workflow_utils skill to find the right utility endpoints.
+- **Multi-step production pipelines**: When the user wants complex outputs (multi-scene videos, \
+documentaries, campaigns, style variations, training datasets), load the workflow_creation skill first. \
+It contains proven production patterns: fan-out parallelism, contact sheets, frame-bridging, \
+start/end frame interpolation, sequential compositing, and more. \
+IMPORTANT: Never hardcode model names in pipelines. Always use best_models and search_models \
+to find the current best model for each step. The right model today may not be the right model tomorrow.
 
 # ask_user — interactive questions
 - NEVER write questions or options as plain text. ALWAYS use the ask_user tool. \

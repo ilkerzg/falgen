@@ -73,8 +73,13 @@ SKILL_CATALOG = {
     ),
     "brand_identity": (
         "brand_identity.md",
-        "Visual brand identity — logo design, color systems, typography, brand guidelines, visual consistency",
+        "Visual brand identity - logo design, color systems, typography, brand guidelines, visual consistency",
         ["logo", "brand", "identity", "typography", "color palette", "brand guide", "visual identity", "corporate", "design system"],
+    ),
+    "workflow_creation": (
+        "workflow_creation.md",
+        "Production pipeline design patterns - multi-step workflows, parallel fan-out, compositing chains, video assembly",
+        ["workflow", "pipeline", "multi-step", "chain", "parallel", "batch", "automate", "production", "campaign", "documentary", "multi-scene", "dataset", "turntable", "contact sheet"],
     ),
 }
 
